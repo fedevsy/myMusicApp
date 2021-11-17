@@ -6,69 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>myMusicApp</title>
     <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="./assets/css/reset.css">
+    <link rel="stylesheet" href="./assets/css/common.css">
+    <link rel="stylesheet" href="./assets/css/main.css">
     <!-- fontawesome5 free icons -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <style>
-        @font-face{font-family:'Noto Sans KR';font-style:normal;font-weight:300;src:url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype')}
-        @font-face{font-family:'Noto Sans KR';font-style:normal;font-weight:500;src:url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype')}
-        @font-face{font-family:'Noto Sans KR';font-style:normal;font-weight:700;src:url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype')}
-
-        body{width:100%;height:100%;margin:0;padding:0;font-family:'Noto Sans KR',sans-serif;letter-spacing:-.5px;background-color:#333;}
-        button{padding:0;border:0;background:transparent;cursor:pointer;outline:none;width:40px;height:40px;float:left}
-        .wrapper{width:1000px;height:100vh;margin:0 auto;background-color:rgba(0,0,0,.3);}
+    <!-- jQuery -->
+    <script src="./assets/js/jquery-3.6.0.min.js"></script>
+    <!-- <script type="text/javascript"> 
+        // F12 버튼 방지 
+        $(document).ready(function(){ 
+            $(document).bind('keydown',function(e){ 
+                if ( e.keyCode == 123 /* F12 */) { 
+                    e.preventDefault(); e.returnValue = false; 
+                } 
+            }); 
+        }); 
         
-        #thumnail{position:absolute;left:50%;top:100px;transform:translateX(-50%);width:300px;height:300px;background-image:url(./assets/img/thum_01.jpg);background-repeat:no-repeat;background-size:cover;background-position:center;border-radius:50%;}
-        #currentFileName{position:absolute;left:50%;top:400px;transform:translateX(-50%);color:#fff}
-        #audioPlayer{--seek-before-width:0;--volume-before-width:100%;--buffered-width:0;position:fixed;bottom:0;width:100%;max-width:1000px;margin:0 auto;background:#222;color:#fff}
-        #audioPlayer::before{position:absolute;content:'';width:calc(100% + 4px);height:calc(100% + 4px);left:-2px;top:-2px;z-index:-1}
-
-        #btnPlay{margin:20px 2.5% 10px;color:#fff}
-        #btnMute{margin:0 2.5%;color:#fff}
-
-        path{stroke:#007db5}
-        .time{display:inline-block;width:37px;text-align:center;font-size:20px;margin:28.5px 0 18.5px;float:left}
-        output{display:inline-block;width:32px;text-align:center;font-size:20px;float:left;clear:left;margin-top:5px}
+        // 우측 클릭 방지 
+        document.onmousedown=disableclick; 
+        status="Right click is not available."; 
         
-        .slider_wrapper{position:absolute;left:50%;transform:translateX(-50%);bottom:20px;display:flex;flex-direction:row;flex-wrap:nowrap;align-content:center;justify-content:center;align-items:center;}
-        .slider_wrapper_vertical{padding:20px 0;display:flex;flex-direction:column;flex-wrap:nowrap;align-content:center;justify-content:center;align-items:center;background:#111;width:60px;position:absolute;right:20px;bottom:20px;border-radius:50px}
-        
-        #seek-slider{position:relative;-webkit-appearance:none;width:48%;margin:0;padding:0;height:19px;margin:30px 2.5% 20px 2.5%;float:left;outline:none;background:transparent;}
-        #seek-slider::-webkit-slider-runnable-track{width:100%;height:10px;cursor:pointer;background:#007db599;border-radius:10px;}
-        #seek-slider::before{position:absolute;content:"";top:4px;left:0;width:var(--seek-before-width);height:10px;background-color:#007db5;cursor:pointer;border-radius:10px;}
-        #seek-slider::-webkit-slider-thumb{position:relative;-webkit-appearance:none;box-sizing:content-box;border:1px solid #007db5;height:15px;width:15px;border-radius:50%;cursor:pointer;margin:-3.5px 0;background:#007db5}
-        #seek-slider:active::-webkit-slider-thumb{transform:scale(1.2);background:#007db5}
-        
-        #seek-slider::-moz-range-track{width:100%;height:3px;cursor:pointer;background:linear-gradient(to right,rgba(0,125,181,0.6) var(--buffered-width),rgba(0,125,181,0.2) var(--buffered-width))}
-        #seek-slider::-moz-range-progress{background-color:#007db5}
-        #seek-slider::-moz-focus-outer{border:0}
-        #seek-slider::-moz-range-thumb{box-sizing:content-box;border:1px solid #007db5;height:15px;width:15px;border-radius:50%;cursor:pointer}
-        #seek-slider:active::-moz-range-thumb{transform:scale(1.2);background:#007db5}
-        
-        #seek-slider::-ms-track{width:100%;height:3px;cursor:pointer;background:transparent;border:solid transparent;color:transparent}
-        #seek-slider::-ms-fill-lower{background-color:#007db5}
-        #seek-slider::-ms-fill-upper{background:linear-gradient(to right,rgba(0,125,181,0.6) var(--buffered-width),rgba(0,125,181,0.2) var(--buffered-width))}
-        #seek-slider::-ms-thumb{box-sizing:content-box;border:1px solid #007db5;height:15px;width:15px;border-radius:50%;cursor:pointer}
-        #seek-slider:active::-ms-thumb{transform:scale(1.2);background:#007db5}
-
-        #volume-slider{position:relative;-webkit-appearance:slider-vertical;width:10px;margin:0;padding:0;height:100px;float:left;outline:none;border-radius:20px;}
-        #volume-slider::before{position:absolute;content:"";top:8px;left:0;width:0;height:100px;background-color:#007db5;cursor:pointer;border-radius:20px}
-        
-        #volume-slider::-webkit-slider-runnable-track{width:10px;height:100px;cursor:pointer;background:linear-gradient(to top,#007db599 var(--buffered-width),#007db533 var(--buffered-width));border-radius:20px}
-        #volume-slider::-webkit-slider-thumb{position:relative;-webkit-appearance:none;box-sizing:content-box;border:1px solid #007db5;height:15px;width:15px;border-radius:50%;cursor:pointer;margin:0 -3.5px}
-        #volume-slider:active::-webkit-slider-thumb{transform:scale(1.2);background:#007db5}
-        
-        #volume-slider::-moz-range-track{width:10px;height:100px;cursor:pointer;background:linear-gradient(to top,rgba(0,125,181,0.6) var(--buffered-width),rgba(0,125,181,0.2) var(--buffered-width))}
-        #volume-slider::-moz-range-progress{background-color:#007db5}
-        #volume-slider::-moz-focus-outer{border:0}
-        #volume-slider::-moz-range-thumb{box-sizing:content-box;border:1px solid #007db5;height:15px;width:15px;border-radius:50%;cursor:pointer}
-        #volume-slider:active::-moz-range-thumb{transform:scale(1.2);background:#007db5}
-        
-        #volume-slider::-ms-track{width:10px;height:100px;cursor:pointer;background:transparent;border:solid transparent;color:transparent}
-        #volume-slider::-ms-fill-lower{background-color:#007db5}
-        #volume-slider::-ms-fill-upper{background:linear-gradient(to top,rgba(0,125,181,0.6) var(--buffered-width),rgba(0,125,181,0.2) var(--buffered-width))}
-        #volume-slider::-ms-thumb{box-sizing:content-box;border:1px solid #007db5;height:15px;width:15px;border-radius:50%;cursor:pointer}
-        #volume-slider:active::-ms-thumb{transform:scale(1.2);background:#007db5}
-    </style>
+        function disableclick(event){ 
+            if (event.button==2) { 
+                alert(status); return false; 
+            }
+        }
+    </script> -->
 </head>
 <body>
     <div class="wrapper">
@@ -90,134 +54,5 @@
         </div>
     </div>
 </body>
-<script type="text/javascript">
-    const playIcon = document.getElementById('btnPlay');
-    const audioPlayerContainer = document.getElementById('audioPlayer');
-    const seekSlider = document.getElementById('seek-slider');
-    const volumeSlider = document.getElementById('volume-slider');
-    const muteIcon = document.getElementById('btnMute');
-    
-    let playState = 'play';
-    let muteState = 'unmute';
-
-    playIcon.addEventListener('click', () => {
-        if(playState === 'play') {
-            audio.play();
-            requestAnimationFrame(whilePlaying);
-            playIcon.innerHTML = '<i class="fas fa-pause"></i>';
-            playState = 'pause';
-        } else {
-            audio.pause();
-            cancelAnimationFrame(raf);
-            playIcon.innerHTML = '<i class="fas fa-play"></i>';
-            playState = 'play';
-        }
-    });
-
-    muteIcon.addEventListener('click', () => {
-        if(muteState === 'unmute') {
-            audio.muted = true;
-            muteIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            muteState = 'mute';
-        } else {
-            audio.muted = false;
-            muteIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
-            muteState = 'unmute';
-        }
-    });
-
-    const showRangeProgress = (rangeInput) => {
-        if(rangeInput === seekSlider) audioPlayerContainer.style.setProperty('--seek-before-width', rangeInput.value / rangeInput.max * 100 + '%');
-        else audioPlayerContainer.style.setProperty('--volume-before-width', rangeInput.value / rangeInput.max * 100 + '%');
-    }
-
-    seekSlider.addEventListener('input', (e) => {
-        showRangeProgress(e.target);
-    });
-
-    volumeSlider.addEventListener('input', (e) => {
-        showRangeProgress(e.target);
-    });
-
-    const audio = document.querySelector('audio');
-    const durationContainer = document.getElementById('duration');
-    const currentTimeContainer = document.getElementById('current-time');
-    const outputContainer = document.getElementById('volume-output');
-    let raf = null;
-
-    const calculateTime = (secs) => {
-        const minutes = Math.floor(secs / 60);
-        const seconds = Math.floor(secs % 60);
-        const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-        return `${minutes}:${returnedSeconds}`;
-    }
-
-    let audioSrc = "mp3/어떻게 지내.mp3";
-    const fileLength = audioSrc.length;
-    const firstSlash = audioSrc.indexOf('/');
-    const lastDot = audioSrc.lastIndexOf('.');
-    const fileName = audioSrc.substring(firstSlash+1,lastDot);
-    const currentFileName = document.querySelector('#currentFileName');
-
-    audio.src = audioSrc;
-    currentFileName.innerHTML = fileName;
-    
-    const displayDuration = () => {
-        durationContainer.textContent = calculateTime(audio.duration);
-    }
-
-    const setSliderMax = () => {
-        seekSlider.max = Math.floor(audio.duration);
-    }
-
-    const displayBufferedAmount = () => {
-        if(audio.buffered.length > 0){
-            const bufferedAmount = Math.floor(audio.buffered.end(audio.buffered.length - 1));
-            audioPlayerContainer.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
-        }
-    }
-
-    const whilePlaying = () => {
-        seekSlider.value = Math.floor(audio.currentTime);
-        currentTimeContainer.textContent = calculateTime(seekSlider.value);
-        audioPlayerContainer.style.setProperty('--seek-before-width', `${seekSlider.value / seekSlider.max * 100}%`);
-        raf = requestAnimationFrame(whilePlaying);
-    }
-
-    if (audio.readyState > 0) {
-        displayDuration();
-        setSliderMax();
-        displayBufferedAmount();
-    } else {
-        audio.addEventListener('loadedmetadata', () => {
-            displayDuration();
-            setSliderMax();
-            displayBufferedAmount();
-        });
-    }
-
-    audio.addEventListener('progress', displayBufferedAmount);
-
-    seekSlider.addEventListener('input', () => {
-        currentTimeContainer.textContent = calculateTime(seekSlider.value);
-        if(!audio.paused) {
-            cancelAnimationFrame(raf);
-        }
-    });
-
-    seekSlider.addEventListener('change', () => {
-        audio.currentTime = seekSlider.value;
-        if(!audio.paused) {
-            requestAnimationFrame(whilePlaying);
-        }
-    });
-
-    volumeSlider.addEventListener('input', (e) => {
-        const value = e.target.value;
-        outputContainer.textContent = value;
-        audio.volume = value / 100;
-    });
-
-    console.log(audio)
-</script>
+<script src="./assets/js/audioPlayer.js"></script>
 </html>
